@@ -23,7 +23,7 @@ CATEGORY_ID = int(os.environ.get("CATEGORY_ID", "6815"))
 MIN_QTY = int(os.environ.get("MIN_QTY", "3"))
 DATES = [d for d in os.environ.get("DATES", "").split(",") if d]
 TOGETHER = os.environ.get("TOGETHER", "1") == "1"  # adjacent seats only by default
-NTFY_TOPIC = os.environ.get("NTFY_TOPIC","wave_to_earth_notifier")
+NTFY_TOPIC = "wave_to_earth_notifier"
 STATE = Path(__file__).with_name("seen.json")
 PAGE_URL = f"https://www.ticketbayglobal.com/en/product/{CATEGORY_ID}"
 
@@ -59,6 +59,7 @@ def notify(title, msg):
               ' sound name "Glass"\nend run')
     if sys.platform == "darwin":
         subprocess.run(["osascript", "-e", script, msg, title], check=False)
+    print(f"Sent to {NTFY_TOPIC}...")
     if NTFY_TOPIC:
         # JSON publish: HTTP headers can't carry Chinese, so the title goes in the body
         body = json.dumps({"topic": NTFY_TOPIC, "title": title, "message": msg,
