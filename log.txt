@@ -1,4 +1,0 @@
-No new 3+ adjacent ticket listings
-2026-12-18 20:00: 11 sellers sell 1 ticket, 3 sellers sell 2 tickets (1 adjacent)
-2026-12-19 18:00: 12 sellers sell 1 ticket, 1 seller sells 2 tickets (1 adjacent)
-2026-12-20 17:00: 12 sellers sell 1 ticket, 1 seller sells 2 tickets (1 adjacent)
