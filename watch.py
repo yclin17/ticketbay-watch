@@ -66,6 +66,7 @@ def notify(title, msg):
         req = urllib.request.Request("https://ntfy.sh/", data=body,
                                      headers={"Content-Type": "application/json"})
         urllib.request.urlopen(req, timeout=20)
+        print(f"Sent to {NTFY_TOPIC}...")
 
 
 def summarize(items):
