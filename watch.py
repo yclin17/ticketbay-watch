@@ -74,7 +74,7 @@ def summarize(items):
     for x in items:
         if DATES and not any(x["perform_date"].startswith(d) for d in DATES):
             continue
-        q = by_date.setdefault(x["perform_date"][:16], {}).setdefault(x["sale_quantity"], [0, 0])
+        q = by_date.setdefault(x["perform_date"][:10], {}).setdefault(x["sale_quantity"], [0, 0])
         q[0] += 1
         q[1] += x.get("is_together") == "YES"
     lines = []
@@ -86,7 +86,7 @@ def summarize(items):
             if qty > 1:
                 s += f"（{adj} 位為連號座位）"
             parts.append(s)
-        lines.append(f"{date}：" + "，".join(parts))
+        lines.append(f"{date}：有" + "，".join(parts))
     return "\n".join(lines) or "目前沒有任何票券。"
 
 
@@ -95,15 +95,16 @@ def main():
     items = fetch_all()
     hits = [x for x in items if matches(x)]
     new = [x for x in hits if str(x["id"]) not in seen]
+    kind = "連號" if TOGETHER else ""
+    greeting = "哈囉恩恩/老師，"
     if new:
-        lines = [f'{x["perform_date"][:16]} | {x["area"]} {x["seat_number"]} | '
-                 f'{x["sale_quantity"]} 張 | 每張 ${x["fee_included_price"]}'
-                 f'{"（連號）" if x.get("is_together") == "YES" else ""}' for x in new]
-        kind = "連號" if TOGETHER else ""
-        notify(f"有 {len(new)} 筆新的 {MIN_QTY} 張以上{kind}票券！", "\n".join(lines))
+        dates = "、".join(sorted({x["perform_date"][:10] for x in new}))
+        headline = (f"好消息！！有 {len(new)} 位賣家賣 {MIN_QTY} 張以上{kind}票券，"
+                    f"{dates}這一天的演唱會。")
+        notify("🎉 有符合的票券！", f"{greeting}\n{headline}\n{summarize(items)}")
     else:
-        kind = "連號" if TOGETHER else ""
-        notify(f"沒有新的 {MIN_QTY} 張以上{kind}票券", summarize(items))
+        headline = f"目前沒有新的 {MIN_QTY} 張以上{kind}票券。"
+        notify("票券每小時通知", f"{greeting}\n{headline}\n{summarize(items)}")
     STATE.write_text(json.dumps(sorted(seen | {str(x["id"]) for x in hits})))
 
 
