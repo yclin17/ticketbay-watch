@@ -2,8 +2,8 @@ name: ticketbay-watch
 
 on:
   schedule:
-    - cron: "40 * * * *"   # hourly (off the :00 mark, which GitHub often delays)
-  workflow_dispatch:        # lets you run it manually from the Actions tab
+    - cron: "40 * * * *"
+  workflow_dispatch:
 
 permissions:
   contents: write           # to commit seen.json back
