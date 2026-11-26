@@ -85,8 +85,6 @@ def summarize(items):
         for qty in sorted(by_date[date]):
             n, adj = by_date[date][qty]
             s = f"{n} 位賣家各賣 {qty} 張"
-            if qty > 1:
-                s += f"（{adj} 位為連號座位）"
             parts.append(s)
         lines.append(f"{date}：有" + "，".join(parts))
     return "\n".join(lines) or "目前沒有任何票券。"
@@ -98,15 +96,15 @@ def main():
     hits = [x for x in items if matches(x)]
     new = [x for x in hits if str(x["id"]) not in seen]
     kind = "連號" if TOGETHER else ""
-    greeting = "哈囉恩恩/老師，"
+    greeting = "哈囉老師跟恩恩，"
     if new:
         dates = "、".join(sorted({x["perform_date"][:10] for x in new}))
         headline = (f"好消息！！有 {len(new)} 位賣家賣 {MIN_QTY} 張以上{kind}票券，"
                     f"{dates}這一天的演唱會。")
         notify("🎉 有符合的票券！", f"{greeting}\n{headline}\n{summarize(items)}")
     else:
-        headline = f"目前沒有新的 {MIN_QTY} 張以上{kind}票券。"
-        notify("票券每小時通知", f"{greeting}\n{headline}\n{summarize(items)}")
+        headline = f"目前沒有新的 {MIN_QTY} 張以上{kind}票券。以下是當前售票資訊："
+        notify("票券通知來囉！", f"{greeting}\n{headline}\n{summarize(items)}")
     STATE.write_text(json.dumps(sorted(seen | {str(x["id"]) for x in hits})))
 
 
